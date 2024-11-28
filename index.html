@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morse Code Decoder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin: 20px 0;
+            padding: 10px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .instructions {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            margin-bottom: 15px;
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Morse Code Decoder</h1>
+    
+    <div class="instructions">
+        <p>Instructions:</p>
+        <ul>
+            <li>Enter Morse code using dots (.) and dashes (-)</li>
+            <li>Separate letters with a space</li>
+            <li>Separate words with ' / '</li>
+            <li>Example: '.... . .-.. .-.. --- / .-- --- .-. .-.. -...'</li>
+        </ul>
+    </div>
+
+    <textarea id="morseInput" placeholder="Enter Morse code here..."></textarea>
+    
+    <button onclick="decodeMorse()">Decode</button>
+    <button onclick="speakText()">Speak</button>
+    
+    <div id="result"></div>
+
+    <script>
+        const MORSE_CODE_DICT = {
+            '.-': 'A', '-...': 'B', '-.-.': 'C', '-..': 'D', '.': 'E',
+            '..-.': 'F', '--.': 'G', '....': 'H', '..': 'I', '.---': 'J',
+            '-.-': 'K', '.-..': 'L', '--': 'M', '-.': 'N', '---': 'O',
+            '.--.': 'P', '--.-': 'Q', '.-.': 'R', '...': 'S', '-': 'T',
+            '..-': 'U', '...-': 'V', '.--': 'W', '-..-': 'X', '-.--': 'Y',
+            '--..': 'Z', '-----': '0', '.----': '1', '..---': '2', '...--': '3',
+            '....-': '4', '.....': '5', '-....': '6', '--...': '7', '---..': '8',
+            '----.': '9', '/': ' '
+        };
+
+        function morseToText(morseCode) {
+            const words = morseCode.trim().split(' / ');
+            const decodedMessage = words.map(word => {
+                const letters = word.split(' ');
+                return letters.map(letter => MORSE_CODE_DICT[letter] || '').join('');
+            });
+            return decodedMessage.join(' ');
+        }
+
+        function decodeMorse() {
+            const morseInput = document.getElementById('morseInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const decodedText = morseToText(morseInput);
+                if (!decodedText.trim()) {
+                    throw new Error('Invalid Morse code');
+                }
+                resultDiv.textContent = `Decoded Text: ${decodedText}`;
+                resultDiv.style.color = 'green';
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.style.color = 'red';
+            }
+        }
+
+        function speakText() {
+            const resultDiv = document.getElementById('result');
+            const textToSpeak = resultDiv.textContent.replace('Decoded Text: ', '');
+            
+            if (textToSpeak && 'speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Text-to-Speech not supported in this browser');
+            }
+        }
+    </script>
+</body>
+</html>
