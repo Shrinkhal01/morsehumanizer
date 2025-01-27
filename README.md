@@ -23,14 +23,17 @@ A simple Morse Code Decoder application with both Python CLI and web-based inter
     cd morse-code-decoder
     ```
 
+
 2. Install required Python libraries
     ```bash
     pip install pyttsx3
     ```
 
+
 ## Usage
 
 ### CLI Interface
+
 Run the Python script:
     ```bash
     python app.py
